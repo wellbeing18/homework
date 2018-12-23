@@ -49,7 +49,7 @@ def main():
             totalr = 0.
             steps = 0
             while not done:
-                action = policy_fn(obs[None,:])
+                action = policy_fn(obs[None,:]) # wb: make obs from 1d (17,) to 2d array (1,17)
                 observations.append(obs)
                 actions.append(action)
                 obs, r, done, _ = env.step(action)

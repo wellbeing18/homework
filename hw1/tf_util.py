@@ -218,16 +218,16 @@ def function(inputs, outputs, updates=None, givens=None):
         return lambda *inputs : type(outputs)(zip(outputs.keys(), f(*inputs)))
     else:
         f = _Function(inputs, [outputs], updates, givens=givens)
-        return lambda *inputs : f(*inputs)[0]
-
+        return lambda *inputs : f(*inputs)[0] # wb: wrapper to only return results[0], which is the output of policy
+# functor 
 class _Function(object):
     def __init__(self, inputs, outputs, updates, givens, check_nan=False):
         assert all(len(i.op.inputs)==0 for i in inputs), "inputs should all be placeholders"
-        self.inputs = inputs
+        self.inputs = inputs # wb: input place holder
         updates = updates or []
         self.update_group = tf.group(*updates)
-        self.outputs_update = list(outputs) + [self.update_group]
-        self.givens = {} if givens is None else givens
+        self.outputs_update = list(outputs) + [self.update_group] # wb: list of ops to output
+        self.givens = {} if givens is None else givens  # wb: for extra input?
         self.check_nan = check_nan
     def __call__(self, *inputvals):
         assert len(inputvals) == len(self.inputs)
